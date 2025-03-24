@@ -19,6 +19,12 @@ final class HomeController extends AbstractController
         return $this->render('index.html.twig', [
             'controller_name' => 'HomeController',
         ]);
+    }
+
+    #[Route('/alert', name: 'app_alert')]
+    public function flash(): Response
+    {
+        return $this->render('alert.html.twig');
 
     }
 

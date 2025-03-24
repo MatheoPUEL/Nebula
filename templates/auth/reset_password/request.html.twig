@@ -1,0 +1,42 @@
+{% extends 'base_no-nav.html.twig' %}
+{% block title %}Reset your password{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-column align-items-center h-100 px-3 px-lg-5 pt-5">
+        <div class="w-100 mt-auto" style="max-width: 526px;">
+            <h1>{{ 'forgot_password'|trans }}</h1>
+            <form method="post" class="needs-validation" novalidate>
+                {% for flash_error in app.flashes('reset_password_error') %}
+                    <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                {% endfor %}
+                {{ form_start(requestForm) }}
+
+                <div class="pb-3 mb-1">
+                    <div class="position-relative">
+                        <i class="ai-mail fs-lg position-absolute top-50 start-0 translate-middle-y ms-3"></i>
+                        <input
+                            name="{{ field_name(requestForm.email) }}"
+                            value="{{ field_value(requestForm.email) }}"
+                            type="email"
+                            placeholder="{{ field_label(requestForm.email) }}"
+                            class="form-control form-control-lg ps-5"
+                            required autofocus
+                        >
+                    </div>
+                </div>
+                <div>
+                    <small class="">
+                        Enter your email address, and we will send you a
+                        link to reset your password.
+                    </small>
+                </div>
+
+                <button class="btn btn-primary mt-3 w-100">{{ "send_password_reset_email"|trans }}</button>
+                {{ form_end(requestForm) }}
+            </form>
+        </div>
+
+        <!-- Copyright -->
+        <p class="nav w-100 fs-sm pt-5 mt-auto mb-5" style="max-width: 526px;"><span class="text-body-secondary">© All rights reserved. Made by</span><a class="nav-link d-inline-block p-0 ms-1" href="https://createx.studio/" target="_blank" rel="noopener">Createx Studio</a></p>
+    </div>
+{% endblock %}

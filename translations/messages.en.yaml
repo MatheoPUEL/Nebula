@@ -1,0 +1,22 @@
+already_account: "Already have an account ?"
+login: "Login"
+Username: "Username"
+Email: "Email"
+Plain password: "Plain password"
+Agree terms: "Agree to terms"
+register: "Register"
+no_account: "No account ?"
+pwd: "Password"
+sign_in: "Sign in"
+sign_out: "Sign out"
+account_not_valid_alert: "Account is not valid"
+account: "Account"
+confirm_now: "Confirm now"
+settings: "Settings"
+profil: "Profile"
+forgot_password: "Forgot password"
+send_password_reset_email: "Send a password reset email"
+reset_your_password: "Reset your password"
+
+
+

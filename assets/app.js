@@ -8,5 +8,6 @@
  */
 import './theme-switcher.js'
 import './theme.min.js'
+import './vendor/cleave.js/dist/cleave.min.js'
 
 // console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

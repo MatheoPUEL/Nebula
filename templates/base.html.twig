@@ -140,16 +140,45 @@
                         Around
                     </a>
 
-                    <!-- Theme switcher -->
 
-                    <div class="order-lg-3 d-none d-sm-inline-flex">
-                        <a class="btn btn-outline-primary btn-sm fs-sm" style="margin-right: 15px" href="" rel="noopener">
-                            {{ "login"|trans }}
+                    {% if app.user %}
+                    <div class="dropdown nav d-none d-sm-block order-lg-3">
+                        <a class="nav-link d-flex align-items-center p-0" href="" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img class="border rounded-circle" src="{{ asset('img/avatar/' ~ app.user.avatar) }}" width="48" alt="{{ app.user.username }}">
+                            <div class="ps-2">
+                                <div class="fs-sm dropdown-toggle">{{ app.user.username }}</div>
+                                <div class="fs-xs lh-1 opacity-60">{{ app.user.username }}</div>
+                            </div>
                         </a>
-                        <a class="btn btn-primary btn-sm fs-sm" href="{{ path('app_register') }}" rel="noopener">
-                            {{ "register"|trans }}
-                        </a>
+                        <div class="dropdown-menu dropdown-menu-end my-1">
+                            <h6 class="dropdown-header fs-xs fw-medium text-body-secondary text-uppercase pb-1">{{ 'account'|trans }}</h6>
+                            <a class="dropdown-item" href="account-overview.html">
+                                <i class="ai-user-check fs-lg opacity-70 me-2"></i>
+                                {{ 'profil'|trans }}
+                            </a>
+                            <a class="dropdown-item" href="account-settings.html">
+                                <i class="ai-settings fs-lg opacity-70 me-2"></i>
+                                {{ 'settings'|trans }}
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ path('app_logout') }}">
+                                <i class="ai-logout fs-lg opacity-70 me-2"></i>
+                                {{ 'sign_out'|trans }}
+                            </a>
+                        </div>
                     </div>
+                    {% else %}
+                        <div class="order-lg-3 d-none d-sm-inline-flex">
+                            <a class="btn btn-outline-primary btn-sm fs-sm" style="margin-right: 15px" href="{{ path('app_login') }}" rel="noopener">
+                                {{ "login"|trans }}
+                            </a>
+                            <a class="btn btn-primary btn-sm fs-sm" href="{{ path('app_register') }}" rel="noopener">
+                                {{ "register"|trans }}
+                            </a>
+                        </div>
+                    {% endif %}
+
+
                     <button class="navbar-toggler ms-sm-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -160,28 +189,65 @@
                     <nav class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav navbar-nav-scroll me-auto" style="--ar-scroll-height: 520px;">
                             <li class="nav-item">
-                                <a class="nav-link" href="components/typography.html">UI Kit</a>
+                                <a class="nav-link" href="">News</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="docs/getting-started.html">Docs</a>
+                                <a class="nav-link" href="">APOD</a>
                             </li>
+                            {% if app.user %}
+                            <li class="nav-item dropdown d-sm-none border-top mt-2 pt-2">
+                                <a class="nav-link d-flex align-items-center p-0" href="" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img class="border rounded-circle" src="{{ asset('img/avatar/' ~ app.user.avatar) }}" width="48" alt="{{ app.user.username }}">
+                                    <div class="ps-2">
+                                        <div class="fs-sm dropdown-toggle">{{ app.user.username }}</div>
+                                        <div class="fs-xs lh-1 opacity-60">{{ app.user.username }}</div>
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <h6 class="dropdown-header fs-xs fw-medium text-body-secondary text-uppercase pb-1">{{ 'account'|trans }}</h6>
+                                    <a class="dropdown-item" href="account-overview.html">
+                                        <i class="ai-user-check fs-lg opacity-70 me-2"></i>
+                                        {{ 'profil'|trans }}
+                                    </a>
+                                    <a class="dropdown-item" href="account-settings.html">
+                                        <i class="ai-settings fs-lg opacity-70 me-2"></i>
+                                        {{ 'settings'|trans }}
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{{ path('app_logout') }}">
+                                        <i class="ai-logout fs-lg opacity-70 me-2"></i>
+                                        {{ 'sign_out'|trans }}
+                                    </a>
+                                </div>
+                            </li>
+                            {% endif %}
                         </ul>
 
-                        <hr>
-                        <div class="d-sm-none p-3 mt-n3">
-                            <a class="btn btn-outline-primary w-100 mb-1" href="" rel="noopener">
-                                {{ "login"|trans }}
-                            </a>
-                            <a class="btn btn-primary w-100 mb-1" href="{{ path('app_register') }}" rel="noopener">
-                                {{ "register"|trans }}
-                            </a>
-                        </div>
+                        {% if app.user == null %}
+                            <div class="d-sm-none p-3 mt-n3">
+                                <a class="btn btn-outline-primary w-100 mb-1" href="{{ path('app_login') }}" rel="noopener">
+                                    {{ "login"|trans }}
+                                </a>
+                                <a class="btn btn-primary w-100 mb-1" href="{{ path('app_register') }}" rel="noopener">
+                                    {{ "register"|trans }}
+                                </a>
+                            </div>
+                        {% endif %}
+
                     </nav>
                 </div>
             </div>
         </header>
+        <div class="container">
+            {% if app.user and app.user.isverified == 0 %}
+                <div class="alert alert-warning alert-dismissible fade show" style="margin-top: 75px" role="alert">
+                    {{ 'account_not_valid_alert'|trans }} <a href="">{{ 'confirm_now'|trans }}</a>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
 
-        {% block body %}{% endblock %}
+            {% block body %}{% endblock %}
+        </div>
 
         <footer class="py-5 container">
             <div class="row">
