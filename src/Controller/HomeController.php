@@ -31,7 +31,7 @@ final class HomeController extends AbstractController
     #[Route('/tests', name: 'app_tests')]
     public function test(EntityManagerInterface $entityManager): Response
     {
-        $dateInitiale = "1995-06-16"; // Format AAAA-MM-JJ "1995-06-16"
+        $dateInitiale = "2024-03-24"; // Format AAAA-MM-JJ "1995-06-16" + 1 pour ne pas avoir de doublette
 
         // Obtenir la date actuelle
         $dateActuelle = date("Y-m-d");

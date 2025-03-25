@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ApodController!{% endblock %}
+
+{% block body %}
+
+
+<div class="example-wrapper">
+    <div class="container py-5">
+
+        <h1>{{ 'apod_title'|trans }}</h1>
+        <p>est un programme de la NASA qui propose chaque jour une image spectaculaire de l’univers, accompagnée d’une explication rédigée par des astronomes.</p>
+        <form action="{{ path('app_apod') }}" method="post" class="mt-3">
+            <label for="apod_date_input">{{ 'apod_choice_a_date'|trans }}</label>
+            <div class="input-group">
+                <button type="submit" class="btn btn-primary">{{ 'search'|trans }}</button>
+                <input name="apod_date_input" id="apod_date_input" type="date" class="form-control" placeholder="Button on the left"  min="1995-06-16" max="{{ "now"|date("Y-d-m") }}'" />
+            </div>
+        </form>
+        {% if last_apod.mediatype is defined %}
+            <div class="row justify-content-center">
+                <div class="{% if last_apod.mediatype == 3 %}col-md-12{% else %}col-md-4{% endif %} mt-3">
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>{{ 'title'|trans }} :</strong> <span id="photo-title">{{ last_apod.title }}</span></li>
+                        <li class="list-group-item"><strong>Copyright :</strong> <span id="photo-copyright">{{ last_apod.copyright }}</span></li>
+                        <li class="list-group-item"><strong>Date :</strong> <span id="photo-copyright">{{ last_apod.date }}</span></li>
+                        <li class="list-group-item"><strong>{{ 'explanation'|trans }} :</strong> <span id="photo-copyright">{{ last_apod.explanation }}</span></li>
+                        {% if last_apod.hdurl != 'no_hdurl' %}
+                            <li class="list-group-item">
+                                <a href="{{ last_apod.hdurl }}" target="_blank" class="btn btn-primary w-100">{{ 'see_uhd'|trans }}</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Colonne de droite : Image -->
+                <div class="col-md-8 d-flex justify-content-center mt-3">
+                    <div class="photo-container">
+                        {% if last_apod.mediatype == 1 %}
+                            <img class="rounded-2" src="{{ last_apod.url }}" alt="Photo" id="photo-image">
+                        {% elseif last_apod.mediatype == 2 %}
+                            <iframe height="400px" src="{{ last_apod.url }}">
+                            </iframe>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
+                {{ 'the_date_must'|trans }} 1995-06-16 & {{ "now"|date("Y-d-m") }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

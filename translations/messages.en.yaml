@@ -17,6 +17,11 @@ profil: "Profile"
 forgot_password: "Forgot password"
 send_password_reset_email: "Send a password reset email"
 reset_your_password: "Reset your password"
-
-
+search: "Search"
+title: "Title"
+explanation: "Explanation"
+see_uhd: "See in UHD"
+the_date_must: "The date must be between"
+apod_choice_a_date: "Travel back in time: choose a date to see the image captured on that day"
+apod_title: "APOD (Astronomy Picture of the Day)"
 
