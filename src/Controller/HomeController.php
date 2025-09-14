@@ -19,13 +19,19 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
+        return $this->render('index.html.twig', [
+            'controller_name' => 'HomeController',
+        ]);
+    }
+
+    #[Route('/sendMail', name: 'app_private_sendMail')]
+    public function sendMail(): Response
+    {
         $this->mailerService->sendMail(
             'test@example.com',
             'Sujet Test',
             'Ceci est un mail de test'
         );
-        return $this->render('index.html.twig', [
-            'controller_name' => 'HomeController',
-        ]);
+        return new Response("<p>The mail has been send</p>");
     }
 }
