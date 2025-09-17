@@ -79,6 +79,12 @@ docker compose down --remove-orphans
 APP_ENV=test php bin/phpunit
 ```
 
+### Lancer l'importation des APOD
+
+```bash
+php bin/console app:import-apod
+```
+
 
 ---
 
