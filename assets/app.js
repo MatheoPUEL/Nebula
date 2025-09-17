@@ -7,4 +7,9 @@ import './bootstrap.js';
  */
 import './styles/app.css';
 
+import './theme-switcher.js'
+import './theme.min.js'
+import './vendor/cleave.js/dist/cleave.min.js'
+import './vendor/flatpickr/dist/flatpickr.min.js'
+
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
