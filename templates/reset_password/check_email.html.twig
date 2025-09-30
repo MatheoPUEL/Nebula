@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Password Reset Email Sent{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-column align-items-center h-100 px-3 px-lg-5 pt-5">
+        <div class="w-100 mt-auto" style="max-width: 526px;">
+            <h1>Password reset email sent</h1>
+            <p class="pb-3 mb-3">
+                If an account matching your email exists, we just sent you an email containing a link to reset your password.
+                This link will expire in
+                <strong>
+                    {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}
+                </strong>.
+            </p>
+
+            <p class="mb-4">
+                If you don't receive an email, please check your spam folder or
+                <a href="{{ path('app_forgot_password_request') }}">try again</a>.
+            </p>
+
+            <a class="btn btn-outline-primary w-100" href="{{ path('app_login') }}">Return to login</a>
+        </div>
+
+        <p class="nav w-100 fs-sm pt-5 mt-auto mb-5" style="max-width: 526px;">
+            <span class="text-body-secondary">© All rights reserved. Made by</span>
+            <a class="nav-link d-inline-block p-0 ms-1" href="https://createx.studio/" target="_blank" rel="noopener">
+                Createx Studio
+            </a>
+        </p>
+    </div>
+{% endblock %}

@@ -18,3 +18,7 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+### Apod files where all the pictures are stack
+/asset/images/apod/*
+!asset/images/apod/.gitkeep

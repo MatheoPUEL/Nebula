@@ -5,27 +5,6 @@ Il permet de retrouver les actualités, les lancements, des documents et de rass
 
 ---
 
-## Fonctionnalités principales
-
-* Consultation des actualités et des lancements spatiaux
-* Gestion et envoi de mails
-* Système de messages asynchrones avec Symfony Messenger
-* Base de données MySQL avec PhpMyAdmin pour la gestion
-
----
-
-## Technologies utilisées
-
-* PHP 8.4
-* Symfony 7
-* MySQL 8
-* Docker / Docker Compose
-* Symfony Messenger
-* Symfony Mailer
-* PhpMyAdmin
-
----
-
 ## Installation
 
 1. Cloner le projet :
@@ -39,7 +18,7 @@ cd Nebula
 
 ```bash
 docker compose build --pull --no-cache
-docker compose up
+docker compose up -d
 ```
 
 3. Entrer dans le container PHP
@@ -60,8 +39,11 @@ php bin/console messenger:consume async -vv
 
 6. Accéder au projet :
 
-* Application web : [https://localhost](https://localhost)
-* PhpMyAdmin : [https://localhost:8080](https://localhost:8080)
+| Service           | URL                                                      |
+|-------------------|----------------------------------------------------------|
+| Application web   | [https://localhost](https://localhost)                  |
+| PhpMyAdmin        | [https://localhost:8080](https://localhost:8080)        |
+| Mailpit           | [http://localhost:8025/](http://localhost:8025/)        |
 
 ---
 
@@ -82,7 +64,7 @@ APP_ENV=test php bin/phpunit
 ### Lancer l'importation des APOD
 
 ```bash
-php bin/console app:import-apod
+php -d memory_limit=-1 bin/console app:import-apod
 ```
 
 

@@ -32,7 +32,7 @@ class ImportApodCommand extends Command
         private HttpClientInterface $client
     ) {
         parent::__construct();
-        $this->apiKey = $_ENV['NASA_API_KEY'] ?? 'API_KEY_HERE';
+        $this->apiKey = $_ENV['NASA_API_KEY'] ?? 'EMjs1bQOgX0edW7IBsKJCJLDE5fbYSi6yuKbfcO7';
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -102,7 +102,13 @@ class ImportApodCommand extends Command
                 $apod->setExplanation($apodData['explanation'] ?? null);
                 $apod->setCopyright($apodData['copyright'] ?? null);
 
-                if ($apodData['media_type'] === 'image') {
+                if (!isset($apodData['url']) || empty($apodData['url'])) {
+                    $apod->setMediaType($this->mediaTypeImage);
+                    $apod->setPath('no_image');
+                    $apod->setHdpath(null);
+
+                    $output->writeln("No URL for {$apodData['date']} save as 'no_image'");
+                } elseif ($apodData['media_type'] === 'image') {
                     $apod->setMediaType($this->mediaTypeImage);
 
                     $datePath = $date->format('Y-m-d');
@@ -116,6 +122,7 @@ class ImportApodCommand extends Command
                         $apod->setPath("/{$datePath}.jpg");
                     } catch (\Exception $e) {
                         $output->writeln("Error download normal : {$imageUrl}");
+                        $apod->setPath('no_image');
                     }
 
                     // ==== image HD ====
@@ -128,6 +135,7 @@ class ImportApodCommand extends Command
                             $apod->setHdpath("/{$datePath}-HD.jpg");
                         } catch (\Exception $e) {
                             $output->writeln("Error download in HD : {$hdUrl}");
+                            $apod->setHdpath(null);
                         }
                     }
                 } else {

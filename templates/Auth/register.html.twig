@@ -7,19 +7,129 @@
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
 
-    <h1>Register</h1>
+    <div class="d-flex flex-column align-items-center h-100 px-3 px-lg-5 pt-5">
+        <div class="w-100 mt-auto" style="max-width: 526px;">
+            <h1>Register</h1>
+            <p class="pb-3 mb-3 mb-lg-4">Already have an account? <a href="{{ path('app_login') }}">Login</a></p>
 
-    {{ form_errors(registrationForm) }}
+            {{ form_start(registrationForm, { 'attr' : { 'class': 'needs-validation', 'novalidate':'' } }) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.username) }}
+            {# Username #}
+            <div class="pb-3 mb-3">
+                <div class="position-relative">
+                    <i class="ai-user fs-lg position-absolute top-50 start-0 translate-middle-y ms-3"></i>
+                    <input
+                        name="{{ field_name(registrationForm.username) }}"
+                        value="{{ field_value(registrationForm.username) }}"
+                        placeholder="Username"
+                        class="form-control form-control-lg ps-5
+                            {% if form_errors(registrationForm.username) %}
+                                is-invalid
+                            {% elseif registrationForm.username.vars.value is not empty %}
+                                is-valid
+                            {% endif %}"
+                        required autofocus
+                    >
+                </div>
+                {% if form_errors(registrationForm.username) %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.username) }}
+                    </div>
+                {% endif %}
+            </div>
 
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+            {# Email #}
+            <div class="pb-3 mb-3">
+                <div class="position-relative">
+                    <i class="ai-mail fs-lg position-absolute top-50 start-0 translate-middle-y ms-3"></i>
+                    <input
+                        name="{{ field_name(registrationForm.email) }}"
+                        value="{{ field_value(registrationForm.email) }}"
+                        type="email"
+                        placeholder="Email"
+                        class="form-control form-control-lg ps-5
+                            {% if form_errors(registrationForm.email) %}
+                                is-invalid
+                            {% elseif registrationForm.email.vars.value is not empty %}
+                                is-valid
+                            {% endif %}"
+                        required
+                    >
+                </div>
+                {% if form_errors(registrationForm.email) %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.email) }}
+                    </div>
+                {% endif %}
+            </div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+            {# Password #}
+            <div class="pb-3 mb-3">
+                <div class="position-relative">
+                    <i class="ai-lock-closed fs-lg position-absolute top-50 start-0 translate-middle-y ms-3"></i>
+                    <input
+                        name="{{ field_name(registrationForm.plainPassword) }}"
+                        value="{{ field_value(registrationForm.plainPassword) }}"
+                        type="password"
+                        placeholder="Password"
+                        class="form-control form-control-lg ps-5
+                            {% if form_errors(registrationForm.plainPassword) %}
+                                is-invalid
+                            {% elseif registrationForm.plainPassword.vars.value is not empty %}
+                                is-valid
+                            {% endif %}"
+                        required
+                    >
+                </div>
+                {% if form_errors(registrationForm.plainPassword) %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.plainPassword) }}
+                    </div>
+                {% endif %}
+            </div>
+
+            {# Agree Terms #}
+            <div class="mb-3 form-check">
+                <input
+                    type="checkbox"
+                    name="{{ field_name(registrationForm.agreeTerms) }}"
+                    class="form-check-input
+                        {% if form_errors(registrationForm.agreeTerms) %}
+                            is-invalid
+                        {% endif %}"
+                >
+                <label class="form-check-label">I agree to the terms</label>
+                {% if form_errors(registrationForm.agreeTerms) %}
+                    <div class="invalid-feedback d-block">
+                        {{ form_errors(registrationForm.agreeTerms) }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-lg btn-primary w-100 mb-4">Register</button>
+
+            <h2 class="h6 text-center pt-3 pt-lg-4 mb-4">Or sign in with your social account | Soon</h2>
+            <div class="row row-cols-1 row-cols-sm-2 gy-3">
+                <div class="col">
+                    <a class="btn btn-icon btn-outline-secondary btn-google btn-lg w-100 disabled">
+                        <i class="ai-google fs-xl me-2"></i>
+                        Google
+                    </a>
+                </div>
+                <div class="col">
+                    <a class="btn btn-icon btn-outline-secondary btn-facebook btn-lg w-100 disabled">
+                        <i class="ai-facebook fs-xl me-2"></i>
+                        Facebook
+                    </a>
+                </div>
+            </div>
+
+            {{ form_end(registrationForm) }}
+        </div>
+
+        <p class="nav w-100 fs-sm pt-5 mt-auto mb-5" style="max-width: 526px;">
+            <span class="text-body-secondary">© All rights reserved. Made by</span>
+            <a class="nav-link d-inline-block p-0 ms-1" href="https://createx.studio/" target="_blank" rel="noopener">Createx Studio</a>
+        </p>
+    </div>
 {% endblock %}
