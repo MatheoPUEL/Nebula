@@ -52,10 +52,9 @@ class SecurityController extends AbstractController
 
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-            
-            // Set display_name to the same value as username
-            $user->setDisplayname(ucfirst($user->getUsername()));
-            
+            $user->setDisplayname("testauto");
+            print_r($user);
+            print_r($form);
             $entityManager->persist($user);
             $entityManager->flush();
 
