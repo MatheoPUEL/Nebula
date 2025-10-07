@@ -55,7 +55,7 @@ class SecurityController extends AbstractController
             
             // Set display_name to the same value as username
             $user->setDisplayname(ucfirst($user->getUsername()));
-            
+            $user->setAvatar('avatar.png');
             $entityManager->persist($user);
             $entityManager->flush();
 
