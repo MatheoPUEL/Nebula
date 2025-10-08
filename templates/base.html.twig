@@ -25,7 +25,7 @@
         {% if app.user %}
             <div class="dropdown nav d-block order-lg-2 ms-auto">
                 <a class="nav-link d-flex align-items-center p-0" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img class="border rounded-circle" src="{{ asset('images/user/avatar/avatar.png') }}" width="40" alt="Isabella Bocouse">
+                    <img class="border rounded-circle" src="{{ asset('user/img/avatar/' ~ app.user.avatar) }}" width="40" alt="Isabella Bocouse">
                     <div class="d-none d-sm-block ps-2">
                         <div class="fs-xs lh-1 opacity-60">@{{ app.user.username }}</div>
                         <div class="fs-sm dropdown-toggle">{{ app.user.displayname }}</div>
@@ -37,7 +37,7 @@
                         <i class="ai-user-check fs-lg opacity-70 me-2"></i>
                         Overview
                     </a>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="{{ path('app_user_settings', {'username':app.user.username}) }}">
                         <i class="ai-settings fs-lg opacity-70 me-2"></i>
                         Settings
                     </a>
