@@ -14,24 +14,32 @@
                             <div class="position-lg-sticky top-0">
                                 <div class="d-none d-lg-block" style="padding-top: 105px;"></div>
                                 <div class="offcanvas-lg offcanvas-start" id="sidebarAccount">
-                                    <button class="btn-close position-absolute top-0 end-0 mt-3 me-3 d-lg-none" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                    <button class="btn-close position-absolute top-0 end-0 mt-3 me-3 d-lg-none"
+                                            type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                                     <div class="offcanvas-body">
                                         <div class="pb-2 pb-lg-0 mb-4 mb-lg-5">
-                                            <img class="d-block rounded-circle mb-2" src="{{ asset('user/img/avatar/' ~ user.avatar) }}" width="80" alt="{{ user.username }}">
+                                            <img class="d-block rounded-circle mb-2 avatar-img"
+                                                 style="width:80px; height:80px; object-fit:cover; object-position:center;"
+                                                 src="{{ asset('user/img/avatar/' ~ user.avatar) }}" width="80"
+                                                 alt="{{ user.username }}">
                                             <h3 class="h5 mb-1">{{ user.displayname }}</h3>
                                             <p class="fs-sm text-body-secondary mb-0">@{{ user.username }}</p>
                                         </div>
                                         <nav class="nav flex-column pb-2 pb-lg-4 mb-3">
-                                            <h4 class="fs-xs fw-medium text-body-secondary text-uppercase pb-1 mb-2">Account</h4>
-                                            <a class="nav-link fw-semibold py-2 px-0" href="{{ path('app_user', {'username':app.user.username }) }}">
+                                            <h4 class="fs-xs fw-medium text-body-secondary text-uppercase pb-1 mb-2">
+                                                Account</h4>
+                                            <a class="nav-link fw-semibold py-2 px-0"
+                                               href="{{ path('app_user', {'username':app.user.username }) }}">
                                                 <i class="ai-user-check fs-5 opacity-60 me-2"></i> Overview
                                             </a>
-                                            <a class="nav-link fw-semibold py-2 px-0" href="{{ path('app_user_settings', {'username':app.user.username }) }}">
+                                            <a class="nav-link fw-semibold py-2 px-0"
+                                               href="{{ path('app_user_settings', {'username':app.user.username }) }}">
                                                 <i class="ai-settings fs-5 opacity-60 me-2"></i> Settings
                                             </a>
                                         </nav>
                                         <nav class="nav flex-column pb-2 pb-lg-4 mb-1">
-                                            <h4 class="fs-xs fw-medium text-body-secondary text-uppercase pb-1 mb-2">Dashboard</h4>
+                                            <h4 class="fs-xs fw-medium text-body-secondary text-uppercase pb-1 mb-2">
+                                                Dashboard</h4>
                                             <a class="nav-link fw-semibold py-2 px-0" href="#">
                                                 <i class="ai-cart fs-5 opacity-60 me-2"></i> Premium
                                             </a>
@@ -55,7 +63,8 @@
                     {% endif %}
 
                     <!-- Page content -->
-                    <div class="{% if app.user and app.user.id == user.id %}col-lg-9{% else %}col-lg-12{% endif %} pt-4 pb-2 pb-sm-4">
+                    <div
+                        class="{% if app.user and app.user.id == user.id %}col-lg-9{% else %}col-lg-12{% endif %} pt-4 pb-2 pb-sm-4">
                         {{ form_start(formSettings, {'attr': {'novalidate': 'novalidate', 'need-validation' : 'need-validation'}}) }}
                         <h1 class="h2 mb-4">Account</h1>
 
@@ -86,21 +95,26 @@
                                         </a>
 
                                         <div class="dropdown-menu my-1">
-                                            <a class="dropdown-item fw-normal" href="#modalChangeAvatar" data-bs-toggle="modal">
+                                            <a class="dropdown-item fw-normal" href="#modalChangeAvatar"
+                                               data-bs-toggle="modal">
                                                 <i class="ai-camera fs-base opacity-70 me-2"></i> Upload new photo
                                             </a>
-                                            <a class="dropdown-item text-danger fw-normal" href="#">
+                                            <a class="dropdown-item text-danger fw-normal"
+                                               href="{{ path('app_user_settings_delete_avatar', {'username':app.user.username}) }}">
                                                 <i class="ai-trash fs-base me-2"></i> Delete photo
                                             </a>
                                         </div>
 
                                         <!-- Modal -->
-                                        <div class="modal fade {% if form_errors(formSettings.avatar) %}show{% endif %}" id="modalChangeAvatar" tabindex="-1" role="dialog" {% if form_errors(formSettings.avatar) %}style="display:block;"{% endif %}>
+                                        <div class="modal fade {% if form_errors(formSettings.avatar) %}show{% endif %}"
+                                             id="modalChangeAvatar" tabindex="-1" role="dialog"
+                                             {% if form_errors(formSettings.avatar) %}style="display:block;"{% endif %}>
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h4 class="modal-title">Change your profile picture</h4>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <input
@@ -121,8 +135,14 @@
                                                         <p>Your profile picture needs to be jpg, png or jpeg</p>
                                                     </div>
                                                     <div class="modal-footer flex-column flex-sm-row">
-                                                        <button type="button" class="btn btn-secondary w-100 w-sm-auto mb-3 mb-sm-0" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-primary w-100 w-sm-auto ms-sm-3">Save changes</button>
+                                                        <button type="button"
+                                                                class="btn btn-secondary w-100 w-sm-auto mb-3 mb-sm-0"
+                                                                data-bs-dismiss="modal">Close
+                                                        </button>
+                                                        <button type="submit"
+                                                                class="btn btn-primary w-100 w-sm-auto ms-sm-3">Save
+                                                            changes
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -131,7 +151,8 @@
                                     </div>
                                     <div class="ps-3">
                                         <h3 class="h6 mb-1">Profile picture</h3>
-                                        <p class="fs-sm text-body-secondary mb-0">PNG, JPG no bigger than 1000px wide and tall.</p>
+                                        <p class="fs-sm text-body-secondary mb-0">PNG, JPG no bigger than 1000px wide
+                                            and tall.</p>
                                     </div>
                                 </div>
 
@@ -212,7 +233,8 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label" for="bio">Bio</label>
-                                        <textarea class="form-control" rows="5" placeholder="Add a bio" id="bio"></textarea>
+                                        <textarea class="form-control" rows="5" placeholder="Add a bio"
+                                                  id="bio"></textarea>
                                     </div>
 
                                     <div class="col-12 d-flex justify-content-end pt-3">
@@ -234,7 +256,8 @@
 
         <hr class="d-none d-dark-mode-block">
 
-        <button class="d-lg-none btn btn-sm fs-sm btn-primary w-100 rounded-0 fixed-bottom" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarAccount">
+        <button class="d-lg-none btn btn-sm fs-sm btn-primary w-100 rounded-0 fixed-bottom" type="button"
+                data-bs-toggle="offcanvas" data-bs-target="#sidebarAccount">
             <i class="ai-menu me-2"></i> Account menu
         </button>
     </main>
