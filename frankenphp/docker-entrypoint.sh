@@ -1,66 +1,71 @@
 #!/bin/sh
 set -e
 
+# Seuls les scripts appelant php ou bin/console doivent déclencher l'init
 if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
-	# Install the project the first time PHP is started
-	# After the installation, the following block can be deleted
-	if [ ! -f composer.json ]; then
-		rm -Rf tmp/
-		composer create-project "symfony/skeleton $SYMFONY_VERSION" tmp --stability="$STABILITY" --prefer-dist --no-progress --no-interaction --no-install
 
-		cd tmp
-		cp -Rp . ..
-		cd -
-		rm -Rf tmp/
+    # Installation du projet la première fois
+    if [ ! -f composer.json ]; then
+        echo "Installing Symfony project..."
+        rm -Rf tmp/
+        composer create-project "symfony/skeleton $SYMFONY_VERSION" tmp --stability="$STABILITY" --prefer-dist --no-progress --no-interaction --no-install
 
-		composer require "php:>=$PHP_VERSION" runtime/frankenphp-symfony
-		composer config --json extra.symfony.docker 'true'
+        cd tmp
+        cp -Rp . ..
+        cd -
+        rm -Rf tmp/
 
-		if grep -q ^DATABASE_URL= .env; then
-			echo 'To finish the installation please press Ctrl+C to stop Docker Compose and run: docker compose up --build --wait'
-			sleep infinity
-		fi
-	fi
+        composer require "php:>=$PHP_VERSION" runtime/frankenphp-symfony
+        composer config --json extra.symfony.docker 'true'
 
-	if [ -z "$(ls -A 'vendor/' 2>/dev/null)" ]; then
-		composer install --prefer-dist --no-progress --no-interaction
-	fi
+        if grep -q ^DATABASE_URL= .env; then
+            echo 'To finish the installation, press Ctrl+C and run: docker compose up --build --wait'
+            sleep infinity
+        fi
+    fi
 
-	# Display information about the current project
-	# Or about an error in project initialization
-	php bin/console -V
+    # Installation des dépendances si non présentes
+    if [ -z "$(ls -A 'vendor/' 2>/dev/null)" ]; then
+        echo "Installing PHP dependencies..."
+        composer install --prefer-dist --no-progress --no-interaction
+    fi
 
-	if grep -q ^DATABASE_URL= .env; then
-		echo 'Waiting for database to be ready...'
-		ATTEMPTS_LEFT_TO_REACH_DATABASE=60
-		until [ $ATTEMPTS_LEFT_TO_REACH_DATABASE -eq 0 ] || DATABASE_ERROR=$(php bin/console dbal:run-sql -q "SELECT 1" 2>&1); do
-			if [ $? -eq 255 ]; then
-				# If the Doctrine command exits with 255, an unrecoverable error occurred
-				ATTEMPTS_LEFT_TO_REACH_DATABASE=0
-				break
-			fi
-			sleep 1
-			ATTEMPTS_LEFT_TO_REACH_DATABASE=$((ATTEMPTS_LEFT_TO_REACH_DATABASE - 1))
-			echo "Still waiting for database to be ready... Or maybe the database is not reachable. $ATTEMPTS_LEFT_TO_REACH_DATABASE attempts left."
-		done
+    php bin/console -V
 
-		if [ $ATTEMPTS_LEFT_TO_REACH_DATABASE -eq 0 ]; then
-			echo 'The database is not up or not reachable:'
-			echo "$DATABASE_ERROR"
-			exit 1
-		else
-			echo 'The database is now ready and reachable'
-		fi
+    # Vérification et attente de la DB
+    if grep -q ^DATABASE_URL= .env; then
+        echo 'Waiting for database to be ready...'
+        ATTEMPTS_LEFT=60
+        until [ $ATTEMPTS_LEFT -eq 0 ] || DATABASE_ERROR=$(php bin/console dbal:run-sql -q "SELECT 1" 2>&1); do
+            if [ $? -eq 255 ]; then
+                ATTEMPTS_LEFT=0
+                break
+            fi
+            sleep 1
+            ATTEMPTS_LEFT=$((ATTEMPTS_LEFT - 1))
+            echo "Still waiting for database... $ATTEMPTS_LEFT attempts left."
+        done
 
-		if [ "$(find ./migrations -iname '*.php' -print -quit)" ]; then
-			php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
-		fi
-	fi
+        if [ $ATTEMPTS_LEFT -eq 0 ]; then
+            echo "Database is not reachable:"
+            echo "$DATABASE_ERROR"
+            exit 1
+        fi
+        echo 'Database ready!'
 
-	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
-	setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
+        # Migrations
+        if [ "$(find ./migrations -iname '*.php' -print -quit)" ]; then
+            echo "Running migrations..."
+            php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
+        fi
+    fi
 
-	echo 'PHP app ready!'
+    # Permissions
+    setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
+    setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var
+
+    echo 'PHP app ready!'
 fi
 
+# Exécuter le processus principal
 exec docker-php-entrypoint "$@"

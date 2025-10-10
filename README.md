@@ -80,4 +80,9 @@ php -d memory_limit=-1 bin/console app:import-apod
 
 ---
 
+---
+## Information
+
+1. Certaines données sont automatiquement ajouter a l'aide de doctrinefixture. vous pouvez trouver le script d'insertion dans "./frankenphp/docker-entrypoint.sh" 
+---
 Bonne exploration de l’espace ! 🚀
