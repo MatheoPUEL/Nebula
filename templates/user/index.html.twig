@@ -87,15 +87,17 @@
                                             <div class="d-flex align-items-center me-3">
                                             @{{ user.username }}
                                             </div>
-                                            <div class="d-flex align-items-center text-nowrap">
-                                                <i class="ai-map-pin me-1"></i>
-                                                Toulouse
-                                            </div>
+                                            {% if user.country.nicename is defined %}
+                                                <div class="d-flex align-items-center text-nowrap">
+                                                    <i class="ai-map-pin me-1"></i>
+                                                    {{ user.country.nicename }}
+                                                </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
-                                <div class="w-auto pt-3 pt-md-0 ms-md-auto" style="max-width: 500px;">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae facere facilis incidunt, laudantium quas sequi ullam vel vero. Aut autem consequatur dicta dolores enim in modi possimus repudiandae sapiente ut.</p>
+                                <div class="pt-3 pt-md-0 ps-md-5 ps-lg-6 ps-xl-7" style="max-width: 500px; text-align: left;">
+                                    <p>{{ user.description }}</p>
                                 </div>
                             </div>
                         </div>

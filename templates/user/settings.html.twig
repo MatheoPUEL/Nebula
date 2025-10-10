@@ -73,7 +73,7 @@
                             <div class="card-body">
                                 <div class="d-flex align-items-center mt-sm-n1 pb-4 mb-0 mb-lg-1 mb-xl-3">
                                     <i class="ai-user text-primary lead pe-1 me-2"></i>
-                                    <h2 class="h4 mb-0">Basic info</h2>
+                                    <h2 class="h4 mb-0">Général information</h2>
                                 </div>
 
                                 {% for message in app.flashes('success') %}
@@ -206,13 +206,21 @@
                                         {% endif %}
                                     </div>
 
-                                    <!-- Les autres champs comme country, language, timezone, bio restent inchangés -->
                                     <div class="col-sm-6">
-                                        <label class="form-label" for="country">Country</label>
-                                        <select class="form-select" id="country">
-                                            <option value="" selected disabled>Select country</option>
-                                            <option value="Australia">Australia</option>
-                                        </select>
+                                        {{ form_label(formSettings.country) }}
+
+                                        {% set countryClass = 'form-control' %}
+                                        {% if form_errors(formSettings.country) %}
+                                            {% set countryClass = countryClass ~ ' is-invalid' %}
+                                        {% elseif formSettings.vars.submitted %}
+                                            {% set countryClass = countryClass ~ ' is-valid' %}
+                                        {% endif %}
+
+                                        {{ form_widget(formSettings.country, {
+                                            attr: { class: countryClass }
+                                        }) }}
+
+                                        {{ form_errors(formSettings.country) }}
                                     </div>
                                     <div class="col-sm-6">
                                         <label class="form-label" for="language">Language</label>
@@ -232,9 +240,24 @@
                                         </select>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label" for="bio">Bio</label>
-                                        <textarea class="form-control" rows="5" placeholder="Add a bio"
-                                                  id="bio"></textarea>
+                                        <label for="{{ formSettings.description.vars.id }}">
+                                            {{ form_label(formSettings.description) }}
+                                        </label>
+
+                                        <textarea
+                                            name="{{ field_name(formSettings.description) }}"
+                                            id="{{ formSettings.description.vars.id }}"
+                                            class="form-control
+                                            {% if form_errors(formSettings.description) %}
+                                                is-invalid
+                                            {% elseif formSettings.vars.submitted %}
+                                                is-valid
+                                            {% endif %}"
+                                            placeholder="{{ formSettings.description.vars.attr.placeholder }}"
+                                            rows="5"
+                                        >{{ app.user.description }}</textarea>
+
+                                        {{ form_errors(formSettings.description) }}
                                     </div>
 
                                     <div class="col-12 d-flex justify-content-end pt-3">
@@ -255,6 +278,8 @@
         </div>
 
         <hr class="d-none d-dark-mode-block">
+
+
 
         <button class="d-lg-none btn btn-sm fs-sm btn-primary w-100 rounded-0 fixed-bottom" type="button"
                 data-bs-toggle="offcanvas" data-bs-target="#sidebarAccount">

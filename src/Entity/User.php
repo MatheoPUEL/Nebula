@@ -28,8 +28,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180)]
     private ?string $email = null;
+
     #[ORM\Column(length: 50)]
     private ?string $avatar = null;
+
+    #[ORM\Column()]
+    private ?string $description = null;
+
+
     /**
      * @var list<string> The user roles
      */
@@ -153,6 +159,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     public function getDisplayname(): ?string
     {
         return $this->display_name;

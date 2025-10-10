@@ -2,13 +2,17 @@
 
 namespace App\Form;
 
+use App\Entity\Country;
 use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
@@ -77,6 +81,30 @@ class UserSettingsType extends AbstractType
                     ]),
                 ],
             ])
+            ->add('country', EntityType::class, [
+                'class' => Country::class,
+                'choice_label' => 'nicename',
+                'placeholder' => 'Country',
+                'label' => 'Country',
+                'attr' => [
+                    'class' => 'form-control form-control-lg ps-5',
+                ],
+            ])
+
+            ->add('description', TextareaType::class, [
+            'label' => 'Description',
+            'attr' => [
+                'placeholder' => 'Your description here',
+            ],
+            'constraints' => [
+                new Length([
+                    'min' => 0,
+                    'max' => 350,
+                    'minMessage' => 'Description should be at least {{ limit }} characters',
+                    'maxMessage' => 'Description should be at least {{ limit }} characters',
+                ]),
+            ],
+        ])
         ;
     }
 

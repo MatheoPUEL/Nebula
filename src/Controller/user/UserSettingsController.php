@@ -2,6 +2,7 @@
 
 namespace App\Controller\user;
 
+use App\Entity\Country;
 use App\Entity\User;
 use App\Form\UserSettingsType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -86,20 +87,20 @@ final class UserSettingsController extends AbstractController
 
             }
 
-
             $UserUpdatingData->setDisplayname($FormSettings->get('display_name')->getData());
-
             $UserUpdatingData->setEmail($FormSettings->get('email')->getData());
-
+            $UserUpdatingData->setCountry($FormSettings->get('country')->getData());
             $entityManager->flush();
 
             $this->addFlash('success', 'Your information is succesfully modified');
             return $this->redirectToRoute('app_user_settings', ['username' => $UserSession->getUsername()]);
         }
 
+        $EachCountry = $entityManager->getRepository(Country::class)->findAll();
 
         if ($UserUpdatingData->getId() == $UserSession->getId()) {
             return $this->render('user/settings.html.twig', [
+                'EachCountry' => $EachCountry,
                 'formSettings' => $FormSettings,
                 'user' => $UserDatabaseUrl
             ]);
