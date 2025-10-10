@@ -89,9 +89,9 @@
                                            href="#" data-bs-toggle="dropdown" aria-expanded="false"
                                            style="width: 80px; height: 80px; background-image: url({{ asset('user/img/avatar/' ~ user.avatar) }});"
                                            aria-label="Upload picture">
-                    <span class="d-block text-light text-center lh-1 pb-1" style="background-color: rgba(0,0,0,.5)">
-                        <i class="ai-camera"></i>
-                    </span>
+                                            <span class="d-block text-light text-center lh-1 pb-1" style="background-color: rgba(0,0,0,.5)">
+                                                <i class="ai-camera"></i>
+                                            </span>
                                         </a>
 
                                         <div class="dropdown-menu my-1">
@@ -122,9 +122,9 @@
                                                             type="file"
                                                             id="file"
                                                             class="form-control mb-2
-                                    {% if form_errors(formSettings.avatar) %}
-                                        is-invalid
-                                    {% endif %}"
+                                                            {% if form_errors(formSettings.avatar) %}
+                                                                is-invalid
+                                                            {% endif %}"
                                                             required autofocus
                                                         >
                                                         {% if form_errors(formSettings.avatar) %}
@@ -170,11 +170,11 @@
                                             value="{{ formSettings.display_name.vars.value }}"
                                             id="dpn"
                                             class="form-control
-                    {% if form_errors(formSettings.display_name) %}
-                        is-invalid
-                    {% elseif formSettings.vars.submitted %}
-                        is-valid
-                    {% endif %}"
+                                            {% if form_errors(formSettings.display_name) %}
+                                                is-invalid
+                                            {% elseif formSettings.vars.submitted %}
+                                                is-valid
+                                            {% endif %}"
                                             required autofocus
                                         >
                                         {% if form_errors(formSettings.display_name) %}
@@ -192,11 +192,11 @@
                                             type="email"
                                             id="email"
                                             class="form-control
-                    {% if form_errors(formSettings.email) %}
-                        is-invalid
-                    {% elseif formSettings.vars.submitted %}
-                        is-valid
-                    {% endif %}"
+                                            {% if form_errors(formSettings.email) %}
+                                                is-invalid
+                                            {% elseif formSettings.vars.submitted %}
+                                                is-valid
+                                            {% endif %}"
                                             required autofocus
                                         >
                                         {% if form_errors(formSettings.email) %}

@@ -52,7 +52,7 @@ class SecurityController extends AbstractController
 
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-            
+
             // Set display_name to the same value as username
             $user->setDisplayname(ucfirst($user->getUsername()));
             $user->setAvatar('avatar.png');
@@ -63,7 +63,7 @@ class SecurityController extends AbstractController
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
                     ->from(new Address('spacewatcher@nebula.com', 'Space Watcher'))
-                    ->to((string) $user->getEmail())
+                    ->to((string)$user->getEmail())
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('Auth/confirmation_email.html.twig')
             );
