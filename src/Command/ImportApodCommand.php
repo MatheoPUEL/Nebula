@@ -17,6 +17,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class ImportApodCommand extends Command
 {
+    // ===============================
+    // Variables configurables
+    // ===============================
     private string $apiKey;
     private string $basePath = 'assets/images/apod';
     private string $firstDate = '1995-06-16';
@@ -36,7 +39,7 @@ class ImportApodCommand extends Command
     {
         $filesystem = new Filesystem();
 
-        // Déterminer la date de début
+        // 1️⃣ Déterminer la date de début
         $lastApod = $this->em->getRepository(Apod::class)
             ->createQueryBuilder('a')
             ->orderBy('a.date_apod', 'DESC')
@@ -58,7 +61,7 @@ class ImportApodCommand extends Command
 
         $currentStart = $startDate;
 
-        // Boucle par tranche pour éviter timeout
+        // 2️⃣ Boucle par tranche pour éviter timeout
         while ($currentStart <= $endDate) {
             $currentEnd = $currentStart->modify("+{$this->chunkYears} year");
             if ($currentEnd > $endDate) {
@@ -100,6 +103,7 @@ class ImportApodCommand extends Command
                 $apod->setCopyright($apodData['copyright'] ?? null);
 
                 if (!isset($apodData['url']) || empty($apodData['url'])) {
+
                     $apod->setMediaType($this->mediaTypeImage);
                     $apod->setPath('no_image');
                     $apod->setHdpath(null);
@@ -112,6 +116,7 @@ class ImportApodCommand extends Command
 
                     // ==== image normale ====
                     $imageUrl = $apodData['url'];
+                    $apod->setUrl($apodData['url']);
                     $normalPath = "{$this->basePath}/{$datePath}.jpg";
 
                     try {
@@ -125,6 +130,7 @@ class ImportApodCommand extends Command
                     // ==== image HD ====
                     if (isset($apodData['hdurl'])) {
                         $hdUrl = $apodData['hdurl'];
+                        $apod->setHdurl($apodData['hdurl']);
                         $hdPath = "{$this->basePath}/{$datePath}-HD.jpg";
 
                         try {

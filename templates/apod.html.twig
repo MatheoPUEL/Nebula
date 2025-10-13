@@ -23,28 +23,28 @@
             {{ 'the_date_must'|trans }} 1995-06-16 & {{ "now"|date("Y-d-m") }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-            <div class="row justify-content-center">
-                <div class="col-md-4 mt-3">
-                    <ul class="list-group">
-                        <li class="list-group-item"><strong>Title: </strong>{{ apod.title }}</li>
-                        <li class="list-group-item"><strong>Copyright:</strong> {{ apod.copyright }}</li>
-                        <li class="list-group-item"><strong>Date:</strong> {{ apod.dateApod|date('Y-m-d') }}</li>
-                        <li class="list-group-item"><strong>Explanation: </strong> {{ apod.explanation }}</li>
+        <div class="row justify-content-center">
+            <div class="col-md-4 mt-3">
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Title: </strong>{{ apod.title }}</li>
+                    <li class="list-group-item"><strong>Copyright:</strong> {{ apod.copyright }}</li>
+                    <li class="list-group-item"><strong>Date:</strong> {{ apod.dateApod|date('Y-m-d') }}</li>
+                    <li class="list-group-item"><strong>Explanation: </strong> {{ apod.explanation }}</li>
 
-                            <li class="list-group-item">
-                                <a href="{{ asset('images/apod' ~ apod.hdpath) }}" target="_blank" class="btn btn-primary w-100">See image in HD</a>
-                            </li>
+                    <li class="list-group-item">
+                        <a href="{{ asset('images/apod' ~ apod.hdpath) }}" target="_blank" class="btn btn-primary w-100">See image in HD</a>
+                    </li>
 
-                    </ul>
-                </div>
+                </ul>
+            </div>
 
-                <!-- Colonne de droite : Image -->
-                <div class="col-md-8 d-flex justify-content-center mt-3">
-                    <div class="photo-container">
-                            <img class="rounded-2" src="{{ asset('images/apod' ~ apod.path) }}" alt="Photo" id="photo-image">
-                    </div>
+            <!-- Colonne de droite : Image -->
+            <div class="col-md-8 d-flex justify-content-center mt-3">
+                <div class="photo-container">
+                    <img class="rounded-2" src="{{ asset('images/apod' ~ apod.path) }}" alt="Photo" id="photo-image">
                 </div>
             </div>
+        </div>
 
     </div>
 

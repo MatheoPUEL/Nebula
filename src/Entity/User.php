@@ -35,6 +35,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column()]
     private ?string $description = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $isPublic = true;
+
 
     /**
      * @var list<string> The user roles
@@ -176,7 +179,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->display_name;
     }
-    
+
     public function setDisplayname(string $display_name): static
     {
         $this->display_name = $display_name;
@@ -205,6 +208,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->country = $country;
 
+        return $this;
+    }
+
+    public function isPublic(): bool
+    {
+        return $this->isPublic;
+    }
+
+    public function setIsPublic(bool $isPublic): static
+    {
+        $this->isPublic = $isPublic;
         return $this;
     }
 }

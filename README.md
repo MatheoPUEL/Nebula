@@ -67,6 +67,12 @@ APP_ENV=test php bin/phpunit
 php -d memory_limit=-1 bin/console app:import-apod
 ```
 
+### Lancer le téléchargment des APOD
+
+```bash
+php -d memory_limit=-1 bin/console app:download-apod-images
+```
+
 
 ---
 
@@ -83,6 +89,6 @@ php -d memory_limit=-1 bin/console app:import-apod
 ---
 ## Information
 
-1. Certaines données sont automatiquement ajouter a l'aide de doctrinefixture. vous pouvez trouver le script d'insertion dans "./frankenphp/docker-entrypoint.sh" 
+1. Certaines données sont automatiquement ajouter a l'aide de doctrinefixture. vous pouvez trouver le script d'insertion dans "./frankenphp/docker-entrypoint.sh"
 ---
 Bonne exploration de l’espace ! 🚀

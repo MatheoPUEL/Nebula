@@ -35,6 +35,12 @@ class Apod
     #[ORM\Column(length: 4096, nullable: true)]
     private ?string $copyright = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?string $url = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $hdurl = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +126,30 @@ class Apod
     public function setCopyright(?string $copyright): static
     {
         $this->copyright = $copyright;
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): static
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    public function getHdurl(): ?string
+    {
+        return $this->hdurl;
+    }
+
+    public function setHdurl(?string $hdurl): static
+    {
+        $this->hdurl = $hdurl;
 
         return $this;
     }

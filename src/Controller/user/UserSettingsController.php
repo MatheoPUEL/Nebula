@@ -90,6 +90,7 @@ final class UserSettingsController extends AbstractController
             $UserUpdatingData->setDisplayname($FormSettings->get('display_name')->getData());
             $UserUpdatingData->setEmail($FormSettings->get('email')->getData());
             $UserUpdatingData->setCountry($FormSettings->get('country')->getData());
+            $UserUpdatingData->setIsPublic($FormSettings->get('isPublic')->getData());
             $entityManager->flush();
 
             $this->addFlash('success', 'Your information is succesfully modified');

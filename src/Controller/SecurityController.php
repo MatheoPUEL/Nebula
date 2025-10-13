@@ -38,7 +38,7 @@ class SecurityController extends AbstractController
             'error' => $error,
         ]);
     }
-    // Test de commit 
+    // Test de commit
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {

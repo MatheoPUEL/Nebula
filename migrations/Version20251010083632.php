@@ -37,8 +37,8 @@ final class Version20251010083632 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_8D93D649F92F3E70 ON user (country_id)');
 
         $this->addSql(file_get_contents(__DIR__.'/SQL/countries.sql'));
+        $this->addSql(file_get_contents(__DIR__.'/SQL/apod.sql'));
 
-        $this->importSqlFile(__DIR__ . '/SQL/apod.sql');
     }
 
     public function down(Schema $schema): void
@@ -48,24 +48,5 @@ final class Version20251010083632 extends AbstractMigration
         $this->addSql('DROP TABLE country');
         $this->addSql('DROP INDEX IDX_8D93D649F92F3E70 ON user');
         $this->addSql('ALTER TABLE user DROP country_id, CHANGE avatar avatar VARCHAR(50) DEFAULT NULL');
-    }
-    private function importSqlFile(string $filePath): void
-    {
-        if (!file_exists($filePath)) {
-            throw new \RuntimeException("Le fichier SQL $filePath n'existe pas !");
-        }
-
-        $sql = file_get_contents($filePath);
-
-        if ($sql === false) {
-            throw new \RuntimeException("Impossible de lire le fichier SQL $filePath");
-        }
-
-        try {
-            // Exécute tout le SQL d'un coup
-            $this->connection->exec($sql);
-        } catch (\Exception $e) {
-            throw new \RuntimeException("Erreur lors de l'exécution du fichier SQL : " . $e->getMessage());
-        }
     }
 }

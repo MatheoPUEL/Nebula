@@ -6,6 +6,7 @@ use App\Entity\Country;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -91,20 +92,28 @@ class UserSettingsType extends AbstractType
                 ],
             ])
 
+            ->add('isPublic', CheckboxType::class, [
+                'label' => 'Public profile',
+                'required' => false, // permet de décocher
+                'attr' => [
+                    'class' => 'form-check-input',
+                ],
+            ])
+
             ->add('description', TextareaType::class, [
-            'label' => 'Description',
-            'attr' => [
-                'placeholder' => 'Your description here',
-            ],
-            'constraints' => [
-                new Length([
-                    'min' => 0,
-                    'max' => 350,
-                    'minMessage' => 'Description should be at least {{ limit }} characters',
-                    'maxMessage' => 'Description should be at least {{ limit }} characters',
-                ]),
-            ],
-        ])
+                'label' => 'Description',
+                'attr' => [
+                    'placeholder' => 'Your description here',
+                ],
+                'constraints' => [
+                    new Length([
+                        'min' => 0,
+                        'max' => 350,
+                        'minMessage' => 'Description should be at least {{ limit }} characters',
+                        'maxMessage' => 'Description should be at least {{ limit }} characters',
+                    ]),
+                ],
+            ])
         ;
     }
 
