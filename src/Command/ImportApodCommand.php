@@ -17,9 +17,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class ImportApodCommand extends Command
 {
-    // ===============================
-    // Variables configurables
-    // ===============================
     private string $apiKey;
     private string $basePath = 'assets/images/apod';
     private string $firstDate = '1995-06-16';
@@ -39,7 +36,7 @@ class ImportApodCommand extends Command
     {
         $filesystem = new Filesystem();
 
-        // 1️⃣ Déterminer la date de début
+        // Déterminer la date de début
         $lastApod = $this->em->getRepository(Apod::class)
             ->createQueryBuilder('a')
             ->orderBy('a.date_apod', 'DESC')
@@ -61,7 +58,7 @@ class ImportApodCommand extends Command
 
         $currentStart = $startDate;
 
-        // 2️⃣ Boucle par tranche pour éviter timeout
+        // Boucle par tranche pour éviter timeout
         while ($currentStart <= $endDate) {
             $currentEnd = $currentStart->modify("+{$this->chunkYears} year");
             if ($currentEnd > $endDate) {
