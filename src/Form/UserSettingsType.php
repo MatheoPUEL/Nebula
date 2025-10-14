@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Country;
+use App\Entity\TimeZone;
 use App\Entity\User;
+use Cassandra\Time;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -80,6 +82,15 @@ class UserSettingsType extends AbstractType
                         ],
                         'mimeTypesMessage' => 'Please upload a valid image file (PNG, JPG, JPEG, or GIF)',
                     ]),
+                ],
+            ])
+            ->add('timezone', EntityType::class, [
+                'class' => TimeZone::class,
+                'choice_label' => 'name',
+                'placeholder' => 'Time zone',
+                'label' => 'Time zone',
+                'attr' => [
+                    'class' => 'form-control form-control-lg ps-5',
                 ],
             ])
             ->add('country', EntityType::class, [

@@ -57,6 +57,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Country $country = null;
 
+    #[ORM\ManyToOne]
+    private ?TimeZone $time_zone = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -219,6 +222,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsPublic(bool $isPublic): static
     {
         $this->isPublic = $isPublic;
+        return $this;
+    }
+
+    public function getTimeZone(): ?TimeZone
+    {
+        return $this->time_zone;
+    }
+
+    public function setTimeZone(?TimeZone $time_zone): static
+    {
+        $this->time_zone = $time_zone;
+
         return $this;
     }
 }

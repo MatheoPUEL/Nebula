@@ -224,11 +224,20 @@
                                     </div>
 
                                     <div class="col-sm-6">
-                                        <label class="form-label" for="timezone">Time zone</label>
-                                        <select class="form-select" id="timezone">
-                                            <option value="" selected disabled>Select time zone</option>
-                                            <option value="AST">Atlantic Standard Time (AST)</option>
-                                        </select>
+                                        {{ form_label(formSettings.timezone) }}
+
+                                        {% set timezoneClass = 'form-control' %}
+                                        {% if form_errors(formSettings.timezone) %}
+                                            {% set timezoneClass = timezoneClass ~ ' is-invalid' %}
+                                        {% elseif formSettings.vars.submitted %}
+                                            {% set timezoneClass = timezoneClass ~ ' is-valid' %}
+                                        {% endif %}
+
+                                        {{ form_widget(formSettings.timezone, {
+                                            attr: { class: timezoneClass }
+                                        }) }}
+
+                                        {{ form_errors(formSettings.timezone) }}
                                     </div>
                                     <div class="col-sm-6 mt-4 d-flex flex-column">
                                         <div class="form-check form-switch ps-4">
