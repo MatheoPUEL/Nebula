@@ -13,7 +13,7 @@ final class ApodController extends AbstractController
 {
 
     #[Route('/apod', name: 'app_apod')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function apod(EntityManagerInterface $entityManager): Response
     {
 
         $apod = $entityManager->getRepository(Apod::class)->findOneBy([], ['id' => 'desc']);
@@ -21,5 +21,30 @@ final class ApodController extends AbstractController
         return $this->render('apod.html.twig', ['apod'=>$apod]);
     }
 
+    #[Route('/apod/{date}', name: 'app_apod_date')]
+    public function apodDate(string $date, EntityManagerInterface $entityManager): Response
+    {
+        try {
+            $dateObj = new \DateTimeImmutable($date);
+        } catch (\Exception $e) {
+            return $this->render('apod.html.twig', [
+                'error' => $date
+            ]);
+        }
+        $apod = $entityManager
+            ->getRepository(Apod::class)
+            ->findOneBy(['date_apod' => $dateObj]);
+
+        if (!$apod) {
+            return $this->render('apod.html.twig', [
+                'apod' => $apod,
+                'error' => $date
+            ]);
+        }
+
+        return $this->render('apod.html.twig', [
+            'apod' => $apod
+        ]);
+    }
 
 }

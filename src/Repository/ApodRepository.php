@@ -30,7 +30,6 @@ class ApodRepository extends ServiceEntityRepository
     //            ->getResult()
     //        ;
     //    }
-
     //    public function findOneBySomeField($value): ?Apod
     //    {
     //        return $this->createQueryBuilder('a')

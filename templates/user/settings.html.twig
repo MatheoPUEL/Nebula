@@ -99,10 +99,12 @@
                                                data-bs-toggle="modal">
                                                 <i class="ai-camera fs-base opacity-70 me-2"></i> Upload new photo
                                             </a>
-                                            <a class="dropdown-item text-danger fw-normal"
-                                               href="{{ path('app_user_settings_delete_avatar', {'username':app.user.username}) }}">
-                                                <i class="ai-trash fs-base me-2"></i> Delete photo
-                                            </a>
+                                            {% if user.avatar != "avatar.png" %}
+                                                <a class="dropdown-item text-danger fw-normal"
+                                                   href="{{ path('app_user_settings_delete_avatar', {'username':app.user.username}) }}">
+                                                    <i class="ai-trash fs-base me-2"></i> Delete photo
+                                                </a>
+                                            {% endif %}
                                         </div>
 
                                         <!-- Modal -->

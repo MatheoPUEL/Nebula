@@ -13,33 +13,70 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AsCommand(
     name: 'app:import-apod',
-    description: 'Importe les APOD manquants depuis la dernière date en BDD jusqu’à aujourd’hui, tranche par tranche pour éviter les timeout.',
+    description: 'Importe les APOD manquants et télécharge les images avec la bonne extension.',
 )]
 class ImportApodCommand extends Command
 {
-    // ===============================
-    // Variables configurables
-    // ===============================
     private string $apiKey;
     private string $basePath = 'assets/images/apod';
     private string $firstDate = '1995-06-16';
     private int $mediaTypeImage = 1;
     private int $mediaTypeVideo = 2;
-    private int $chunkYears = 1; // récupère 1 an à la fois
+    private int $chunkYears = 1;
 
     public function __construct(
         private EntityManagerInterface $em,
         private HttpClientInterface $client
     ) {
         parent::__construct();
-        $this->apiKey = $_ENV['NASA_API_KEY'] ?? 'EMjs1bQOgX0edW7IBsKJCJLDE5fbYSi6yuKbfcO7';
+        $this->apiKey = $_ENV['NASA_API_KEY'] ?? 'DEMO_KEY';
+    }
+
+    /**
+     * Déduire l’extension en fonction du Content-Type
+     */
+    private function getExtensionFromMime(?string $mime): string
+    {
+        return match ($mime) {
+            'image/jpeg', 'image/jpg' => 'jpg',
+            'image/png'               => 'png',
+            'image/gif'               => 'gif',
+            default                   => 'jpg',
+        };
+    }
+
+    /**
+     * Télécharge une image et retourne le chemin si OK, sinon null
+     */
+    private function downloadImage(string $url, string $fileBase): ?string
+    {
+        try {
+            $response = $this->client->request('GET', $url);
+
+            // Détecter le content-type
+            $mime = $response->getHeaders()['content-type'][0] ?? null;
+            $ext = $this->getExtensionFromMime($mime);
+
+            // Construire chemin complet
+            $filePath = "{$this->basePath}/{$fileBase}.{$ext}";
+
+            file_put_contents($filePath, $response->getContent());
+
+            return "/{$fileBase}.{$ext}";
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $filesystem = new Filesystem();
 
-        // 1️⃣ Déterminer la date de début
+        if (!$filesystem->exists($this->basePath)) {
+            $filesystem->mkdir($this->basePath, 0755);
+        }
+
+        // 1️⃣ Trouver dernière date en base
         $lastApod = $this->em->getRepository(Apod::class)
             ->createQueryBuilder('a')
             ->orderBy('a.date_apod', 'DESC')
@@ -50,18 +87,16 @@ class ImportApodCommand extends Command
         $startDate = $lastApod
             ? $lastApod->getDateApod()->modify('+1 day')
             : new \DateTimeImmutable($this->firstDate);
+
         $endDate = new \DateTimeImmutable('today');
 
         if ($startDate > $endDate) {
-            $output->writeln("Everything is up to date (last date : {$lastApod?->getDateApod()->format('Y-m-d')})");
+            $output->writeln("Everything is up to date.");
             return Command::SUCCESS;
         }
 
-        $output->writeln("Import from {$startDate->format('Y-m-d')} at {$endDate->format('Y-m-d')}");
+        $currentStart = clone $startDate;
 
-        $currentStart = $startDate;
-
-        // 2️⃣ Boucle par tranche pour éviter timeout
         while ($currentStart <= $endDate) {
             $currentEnd = $currentStart->modify("+{$this->chunkYears} year");
             if ($currentEnd > $endDate) {
@@ -75,24 +110,23 @@ class ImportApodCommand extends Command
                 $currentEnd->format('Y-m-d')
             );
 
-            $output->writeln("🔗 Récupération de {$currentStart->format('Y-m-d')} à {$currentEnd->format('Y-m-d')}");
+            $output->writeln("Fetching {$currentStart->format('Y-m-d')} → {$currentEnd->format('Y-m-d')}");
 
             try {
                 $apods = $this->client->request('GET', $url)->toArray();
             } catch (\Exception $e) {
-                $output->writeln("Error API : " . $e->getMessage());
+                $output->writeln("API error: " . $e->getMessage());
                 $currentStart = $currentEnd->modify('+1 day');
                 continue;
             }
 
             foreach ($apods as $apodData) {
                 $date = new \DateTimeImmutable($apodData['date']);
+                $dateString = $date->format('Y-m-d');
 
-                // Vérifier si déjà en base
-                $existing = $this->em->getRepository(Apod::class)
-                    ->findOneBy(['date_apod' => $date]);
-                if ($existing) {
-                    $output->writeln("Already in base : {$apodData['date']}");
+                // Déjà en BDD ?
+                if ($this->em->getRepository(Apod::class)->findOneBy(['date_apod' => $date])) {
+                    $output->writeln("Already exists : $dateString");
                     continue;
                 }
 
@@ -102,59 +136,68 @@ class ImportApodCommand extends Command
                 $apod->setExplanation($apodData['explanation'] ?? null);
                 $apod->setCopyright($apodData['copyright'] ?? null);
 
-                if (!isset($apodData['url']) || empty($apodData['url'])) {
-
+                // Pas d’URL → image manquante
+                if (!isset($apodData['url'])) {
                     $apod->setMediaType($this->mediaTypeImage);
                     $apod->setPath('no_image');
                     $apod->setHdpath(null);
+                    $output->writeln("⚠ No URL → no_image ($dateString)");
+                }
 
-                    $output->writeln("No URL for {$apodData['date']} save as 'no_image'");
-                } elseif ($apodData['media_type'] === 'image') {
+                // IMAGE
+                elseif ($apodData['media_type'] === 'image') {
                     $apod->setMediaType($this->mediaTypeImage);
-
-                    $datePath = $date->format('Y-m-d');
-
-                    // ==== image normale ====
-                    $imageUrl = $apodData['url'];
                     $apod->setUrl($apodData['url']);
-                    $normalPath = "{$this->basePath}/{$datePath}.jpg";
 
-                    try {
-                        file_put_contents($normalPath, $this->client->request('GET', $imageUrl)->getContent());
-                        $apod->setPath("/{$datePath}.jpg");
-                    } catch (\Exception $e) {
-                        $output->writeln("Error download normal : {$imageUrl}");
+                    // Image normale
+                    $normalPath = $this->downloadImage(
+                        $apodData['url'],
+                        $dateString
+                    );
+
+                    if ($normalPath) {
+                        $apod->setPath($normalPath);
+                        $output->writeln("Image downloaded : $normalPath");
+                    } else {
                         $apod->setPath('no_image');
+                        $output->writeln("Failed normal image : {$apodData['url']}");
                     }
 
-                    // ==== image HD ====
+                    // Image HD
                     if (isset($apodData['hdurl'])) {
-                        $hdUrl = $apodData['hdurl'];
                         $apod->setHdurl($apodData['hdurl']);
-                        $hdPath = "{$this->basePath}/{$datePath}-HD.jpg";
 
-                        try {
-                            file_put_contents($hdPath, $this->client->request('GET', $hdUrl)->getContent());
-                            $apod->setHdpath("/{$datePath}-HD.jpg");
-                        } catch (\Exception $e) {
-                            $output->writeln("Error download in HD : {$hdUrl}");
+                        $hdPath = $this->downloadImage(
+                            $apodData['hdurl'],
+                            "{$dateString}-HD"
+                        );
+
+                        if ($hdPath) {
+                            $apod->setHdpath($hdPath);
+                            $output->writeln("HD image downloaded : $hdPath");
+                        } else {
                             $apod->setHdpath(null);
+                            $output->writeln("Failed HD image : {$apodData['hdurl']}");
                         }
                     }
-                } else {
-                    // ==== vidéo ====
+                }
+
+                // VIDEO
+                else {
                     $apod->setMediaType($this->mediaTypeVideo);
                     $apod->setPath($apodData['url']);
                 }
 
                 $this->em->persist($apod);
                 $this->em->flush();
-                $output->writeln("Imported : {$apodData['date']}");
+
+                $output->writeln("Imported : $dateString");
             }
+
             $currentStart = $currentEnd->modify('+1 day');
         }
 
-        $output->writeln("Import done");
+        $output->writeln("Import completed!");
         return Command::SUCCESS;
     }
 }
