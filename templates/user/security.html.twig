@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Change Password{% endblock %}
+
+{% block body %}
+    <main class="page-wrapper">
+        <div class="container py-5 mt-4 mt-lg-5 mb-lg-4 my-xl-5">
+            {% if user %}
+                <div class="row pt-sm-2 pt-lg-0">
+                    {% if app.user and app.user.id == user.id %}
+                        {% include 'user/user_navbar.html.twig'%}
+                    {% endif %}
+
+                    <div class="{% if app.user and app.user.id == user.id %}col-lg-9{% else %}col-lg-12{% endif %} pt-4 pb-2 pb-sm-4">
+                        <h1 class="h2 mb-4">Account</h1>
+
+                        <section class="card border-0 py-1 p-md-2 p-xl-3 p-xxl-4 mb-4 bg-secondary">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center pb-4 mt-sm-n1 mb-0 mb-lg-1 mb-xl-3">
+                                    <i class="ai-lock-closed text-primary lead pe-1 me-2"></i>
+                                    <h2 class="h4 mb-0">Password change</h2>
+                                </div>
+
+                                {{ form_start(form) }}
+
+                                {# Flash messages #}
+                                {% for message in app.flashes('error') %}
+                                    <div class="alert alert-danger d-flex my-3 my-sm-4">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                                {% for message in app.flashes('success') %}
+                                    <div class="alert alert-success d-flex my-3 my-sm-4">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+
+                                <div class="row g-3 g-sm-4 pb-3">
+
+
+                                    <div class="col-sm-6 pb-3">
+                                        <label class="form-label" for="currentPassword">Current password</label>
+                                        <div class="position-relative password-toggle">
+                                            {{ form_widget(form.currentPassword, {
+                                                'attr': {
+                                                    'class': 'form-control ' ~ (
+                                                    form_errors(form.currentPassword) ? 'is-invalid' :
+                                                    (form.currentPassword.vars.value is not empty ? 'is-valid' : '')
+                                                    ),
+                                                    'placeholder': 'Current password',
+                                                    'id': 'currentPassword'
+                                                }
+                                            }) }}
+                                            {% if form_errors(form.currentPassword) %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form_errors(form.currentPassword)|first }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <a class="d-inline-block fs-sm fw-semibold text-decoration-none mt-sm-4" href="{{ path('app_forgot_password_request') }}">Forgot password?</a>
+                                    </div>
+
+                                    {# New Password #}
+                                    <div class="col-sm-6 pb-3">
+                                        <label class="form-label" for="newPassword">New password</label>
+                                        <div class="position-relative password-toggle">
+                                            {{ form_widget(form.newPassword, {
+                                                'attr': {
+                                                    'class': 'form-control ' ~ (
+                                                    form_errors(form.newPassword) ? 'is-invalid' :
+                                                    (form.newPassword.vars.value is not empty ? 'is-valid' : '')
+                                                    ),
+                                                    'placeholder': 'New password',
+                                                    'id': 'newPassword'
+                                                }
+                                            }) }}
+                                            {% if form_errors(form.newPassword) %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form_errors(form.newPassword)|first }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    {# Confirm Password #}
+                                    <div class="col-sm-6 pb-3">
+                                        <label class="form-label" for="confirmPassword">Confirm new password</label>
+                                        <div class="position-relative password-toggle">
+                                            {{ form_widget(form.confirmPassword, {
+                                                'attr': {
+                                                    'class': 'form-control ' ~ (
+                                                    form_errors(form.confirmPassword) ? 'is-invalid' :
+                                                    (form.confirmPassword.vars.value is not empty ? 'is-valid' : '')
+                                                    ),
+                                                    'placeholder': 'Confirm new password',
+                                                    'id': 'confirmPassword'
+                                                }
+                                            }) }}
+                                            {% if form_errors(form.confirmPassword) %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form_errors(form.confirmPassword)|first }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="alert alert-info d-flex my-3 my-sm-4">
+                                    <i class="ai-circle-info fs-xl me-2"></i>
+                                    <p class="mb-0">Password must be minimum 8 characters long - the more, the better.</p>
+                                </div>
+
+                                <div class="d-flex justify-content-end pt-3">
+                                    <a href="#" class="btn btn-secondary">Cancel</a>
+                                    <button class="btn btn-primary ms-3" type="submit">Save changes</button>
+                                </div>
+
+                                {{ form_end(form) }}
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-danger">
+                    This account does not exist!
+                </div>
+            {% endif %}
+        </div>
+    </main>
+{% endblock %}

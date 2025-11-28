@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\user;
+namespace App\Controller\User;
 
 use App\Entity\Country;
 use App\Entity\User;
