@@ -58,6 +58,8 @@ final class UserSettingsController extends AbstractController
 
         /* Start process of the form */
         $UserUpdatingData = $entityManager->getRepository(User::class)->find($UserSession->getId());
+        $originalEmail = $UserDatabaseUrl->getEmail();
+
 
         $FormSettings = $this->createForm(UserSettingsType::class, $this->getUser());
         $FormSettings->handleRequest($request);
@@ -88,9 +90,17 @@ final class UserSettingsController extends AbstractController
             }
 
             $UserUpdatingData->setDisplayname($FormSettings->get('display_name')->getData());
-            $UserUpdatingData->setEmail($FormSettings->get('email')->getData());
             $UserUpdatingData->setCountry($FormSettings->get('country')->getData());
             $UserUpdatingData->setIsPublic($FormSettings->get('isPublic')->getData());
+
+            $postedEmail = $FormSettings->get('email')->getData(); // email posté par l'utilisateur
+            if ($postedEmail !== $originalEmail) {
+                $UserUpdatingData->setIsVerified(0);
+                $this->addFlash('info', 'You modified your email. Verification required.');
+            }
+
+            $UserUpdatingData->setEmail($postedEmail);
+
             $entityManager->flush();
 
             $this->addFlash('success', 'Your information is succesfully modified');

@@ -64,7 +64,7 @@
                                     <i class="ai-chart text-primary lead pe-1 me-2"></i>
                                     <h2 class="h4 mb-0">Statistics</h2>
                                 </div>
-                                {% if user.ispublic == true or user.id == app.user.id %}
+                                {% if user and (user.ispublic == true and (app.user and user.id == user.id)) %}
                                     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 pb-1 pb-md-3">
                                         <div class="col">
                                             <div class="d-flex align-items-center">
@@ -117,12 +117,10 @@
                                     <i class="ai-user text-primary lead pe-1 me-2"></i>
                                     <h2 class="h4 mb-0">Last activities</h2>
                                 </div>
-                                {% if user.ispublic == true or user.id == app.user.id %}
-
+                                {% if user and (user.ispublic == true and (app.user and user.id == user.id)) %}
                                     <div class="d-md-flex align-items-center">
                                         Content
                                     </div>
-
                                 {% else %}
                                     <div class="d-flex w-100 justify-content-center align-items-center">
                                         <span class="badge bg-secondary fs-sm" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover" title="Private account" data-bs-content="This account is private, so you cannot view their information. You can make the same choice in your settings."><i class="ai-lock-closed d-block m-4" style="font-size: 75px"></i></span>

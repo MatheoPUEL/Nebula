@@ -5,7 +5,6 @@ namespace App\Form;
 use App\Entity\Country;
 use App\Entity\TimeZone;
 use App\Entity\User;
-use Cassandra\Time;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -15,10 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Choice;
-use Symfony\Component\Validator\Constraints\File;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class UserSettingsType extends AbstractType
 {
@@ -32,14 +28,19 @@ class UserSettingsType extends AbstractType
                     'placeholder' => 'Display name',
                     'class' => 'form-control form-control-lg ps-5',
                 ],
+                'empty_data' => '',
                 'constraints' => [
-                    new NotBlank([
+                    new Assert\NotBlank([
                         'message' => 'Please enter a display name',
                     ]),
-                    new Length([
+                    new Assert\NotNull([
+                        'message' => 'Display name cannot be null',
+                    ]),
+                    new Assert\Length([
                         'min' => 3,
                         'max' => 50,
                         'minMessage' => 'Display name should be at least {{ limit }} characters',
+                        'maxMessage' => 'Display name should be at most {{ limit }} characters',
                     ]),
                 ],
             ])
@@ -47,18 +48,26 @@ class UserSettingsType extends AbstractType
             // --- EMAIL ---
             ->add('email', EmailType::class, [
                 'label' => false,
+                'empty_data' => '',
                 'attr' => [
                     'placeholder' => 'Email',
                     'class' => 'form-control form-control-lg ps-5',
                 ],
                 'constraints' => [
-                    new NotBlank([
+                    new Assert\NotBlank([
                         'message' => 'Please enter an email',
                     ]),
-                    new Length([
+                    new Assert\NotNull([
+                        'message' => 'Email cannot be null',
+                    ]),
+                    new Assert\Length([
                         'min' => 5,
                         'max' => 180,
                         'minMessage' => 'Email should be at least {{ limit }} characters',
+                        'maxMessage' => 'Email should be at most {{ limit }} characters',
+                    ]),
+                    new Assert\Email([
+                        'message' => 'Please enter a valid email address',
                     ]),
                 ],
             ])
@@ -72,7 +81,7 @@ class UserSettingsType extends AbstractType
                     'class' => 'form-control form-control-lg ps-5',
                 ],
                 'constraints' => [
-                    new File([
+                    new Assert\File([
                         'maxSize' => '1024k',
                         'mimeTypes' => [
                             'image/png',
@@ -84,7 +93,10 @@ class UserSettingsType extends AbstractType
                     ]),
                 ],
             ])
+
+            // --- TIMEZONE ---
             ->add('timezone', EntityType::class, [
+                'empty_data' => '',
                 'class' => TimeZone::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Time zone',
@@ -92,8 +104,12 @@ class UserSettingsType extends AbstractType
                 'attr' => [
                     'class' => 'form-control form-control-lg ps-5',
                 ],
+
             ])
+
+            // --- COUNTRY ---
             ->add('country', EntityType::class, [
+                'empty_data' => '',
                 'class' => Country::class,
                 'choice_label' => 'nicename',
                 'placeholder' => 'Country',
@@ -101,27 +117,34 @@ class UserSettingsType extends AbstractType
                 'attr' => [
                     'class' => 'form-control form-control-lg ps-5',
                 ],
+
             ])
 
+            // --- PUBLIC PROFILE ---
             ->add('isPublic', CheckboxType::class, [
                 'label' => 'Public profile',
-                'required' => false, // permet de décocher
+                'required' => false,
                 'attr' => [
                     'class' => 'form-check-input',
                 ],
+                'constraints' => [
+                    new Assert\NotNull([
+                        'message' => 'Public profile cannot be null',
+                    ]),
+                ],
             ])
 
+            // --- DESCRIPTION ---
             ->add('description', TextareaType::class, [
+                'empty_data' => '',
                 'label' => 'Description',
                 'attr' => [
                     'placeholder' => 'Your description here',
                 ],
                 'constraints' => [
-                    new Length([
-                        'min' => 0,
+                    new Assert\Length([
                         'max' => 350,
-                        'minMessage' => 'Description should be at least {{ limit }} characters',
-                        'maxMessage' => 'Description should be at least {{ limit }} characters',
+                        'maxMessage' => 'Description should be at most {{ limit }} characters',
                     ]),
                 ],
             ])
