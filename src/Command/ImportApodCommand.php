@@ -98,7 +98,7 @@ class ImportApodCommand extends Command
         $currentStart = clone $startDate;
 
         while ($currentStart <= $endDate) {
-            $currentEnd = $currentStart->modify("+{$this->chunkYears} year");
+            $currentEnd = $currentStart->modify("+{$this->chunkYears} month");
             if ($currentEnd > $endDate) {
                 $currentEnd = $endDate;
             }
@@ -110,6 +110,7 @@ class ImportApodCommand extends Command
                 $currentEnd->format('Y-m-d')
             );
 
+            $output->writeln("Current url: " . $url);
             $output->writeln("Fetching {$currentStart->format('Y-m-d')} → {$currentEnd->format('Y-m-d')}");
 
             try {

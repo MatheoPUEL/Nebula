@@ -18,6 +18,8 @@ services:
 
     App\Service\MailerService:
         public: true
+    App\Service\PushCommentService:
+            public: true
 
     App\Controller\User\UserSecurityController:
         autowire: true
