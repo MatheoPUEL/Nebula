@@ -71,7 +71,7 @@
             {% endif %}
 
             {% macro render_comment(comment) %}
-                <div class="mt-4 card {% if comment.parent %} border-left-manual {% endif %}ms-{{ comment.parent ? 0 : 0 }}">
+                <div class="mt-2 card {% if comment.parent %} border-left-manual {% endif %}ms-{{ comment.parent ? 0 : 0 }}">
                     <div class="card-body p-3">
                         <div class="card-title d-flex align-items-center gap-2">
                             <a href="{{ path('app_user', {'username': comment.author.username }) }}" style="text-decoration: none">
@@ -87,7 +87,7 @@
                                 <span class="text-muted">- {{ comment.createdAt|date('d/m/Y') }}</span>
                                 {% if app.user %}
                                 <a href="#Collapse{{ comment.id }}" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapseExample">
-                                    répondre
+                                    Répondre
                                 </a>
                                 {% endif %}
                             </div>
